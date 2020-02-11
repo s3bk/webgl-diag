@@ -55,14 +55,24 @@ function canvas_ctx(names) {
         })
     );
 }
-function canvas_ext(name) {
+function webgl_info() {
     let canvas = document.createElement("canvas");
-    let ctx = canvas.getContext("webgl2");
+    let ctx = canvas.getContext("experimental-webgl") || canvas.getContext("webgl2") || canvas.getContext("webgl");
     add_entrys("webgl extensions", [list(ctx.getSupportedExtensions())]);
+    let lines = [
+        line(`renderer = ${ctx.getParameter(ctx.RENDERER)}`),
+        line(`vendor = ${ctx.getParameter(ctx.VENDOR)}`)
+    ];
+    let dbgRenderInfo = ctx.getExtension("WEBGL_debug_renderer_info");
+    if (dbgRenderInfo) {
+        lines.push(line(`unmasked renderer = ${ctx.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL)}`));
+        lines.push(line(`unmasked vendor = ${ctx.getParameter(dbgRenderInfo.UNMASKED_VENDOR_WEBGL)}`));
+    }
+    add_entrys("renderer info", lines);
 }
 function test() {
     canvas_ctx(["2d", "webgl", "webgl2", "webgl-experimental"]);
-    canvas_ext("webgl2");
+    webgl_info();
 }
 function init() {
     about();
