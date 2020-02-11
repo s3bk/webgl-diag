@@ -55,10 +55,14 @@ function canvas_ctx(names) {
         })
     );
 }
+function webgl_ext(name) {
+    let canvas = document.createElement("canvas");
+    let ctx = canvas.getContext(name);
+    add_entrys(`${name} extensions`, [list(ctx.getSupportedExtensions())]);
+}
 function webgl_info() {
     let canvas = document.createElement("canvas");
     let ctx = canvas.getContext("experimental-webgl") || canvas.getContext("webgl2") || canvas.getContext("webgl");
-    add_entrys("webgl extensions", [list(ctx.getSupportedExtensions())]);
     let lines = [
         line(`renderer = ${ctx.getParameter(ctx.RENDERER)}`),
         line(`vendor = ${ctx.getParameter(ctx.VENDOR)}`)
@@ -72,6 +76,8 @@ function webgl_info() {
 }
 function test() {
     canvas_ctx(["2d", "webgl", "webgl2", "webgl-experimental"]);
+    webgl_ext("webgl");
+    webgl_ext("webgl2");
     webgl_info();
 }
 function init() {
